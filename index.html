@@ -13,17 +13,14 @@
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
   }
   .logo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: 36px;
   }
-  canvas {
-    display: block;
-  }
+  canvas { display: block; }
   .text-container {
     display: flex;
     align-items: baseline;
@@ -36,25 +33,25 @@
     transform: translateY(0);
   }
   .nura {
-    font-size: 64px;
-    font-weight: 700;
-    letter-spacing: 8px;
-    color: #c8c8c8;
-    font-family: 'Segoe UI', 'Arial Black', sans-serif;
+    font-size: 60px;
+    font-weight: 300;
+    letter-spacing: 12px;
+    color: #ffffff;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   }
   .com {
-    font-size: 64px;
+    font-size: 60px;
     font-weight: 700;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     color: #ffffff;
-    font-family: 'Segoe UI', 'Arial Black', sans-serif;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   }
   .reg {
-    font-size: 18px;
+    font-size: 16px;
     color: #ffffff;
     vertical-align: super;
-    margin-left: 4px;
-    font-weight: 400;
+    margin-left: 2px;
+    font-weight: 300;
   }
 </style>
 </head>
@@ -74,312 +71,235 @@ const H = canvas.height;
 const cx = W / 2;
 const cy = H / 2;
 
-// Colors matching the actual logo
-const RED = '#be1e2d';      // Deep crimson red for outer dots
-const RED2 = '#c4222f';     // Slightly lighter red
-const ORANGE = '#e8651a';   // Warm orange
-const ORANGE2 = '#ea7a22';  // Lighter orange
-const ORANGE3 = '#e05a15';  // Darker orange
-const GOLD = '#d4a017';     // Power icon color
-
-// Each dot: [angle_degrees, radius_from_center, dot_radius, color]
-// Carefully mapped from the logo close-up image
-// The logo has dots arranged in radial spokes with size increasing outward
-// Outer dots alternate red/orange, inner dots are all orange
-
 const DEG = Math.PI / 180;
 
-// Define all dots precisely to match the logo
-// Format: { a: angle_deg, r: ring_radius, s: dot_size, c: color }
-const dotDefs = [
-  // === RING 1 (innermost) - 8 small orange dots ===
-  { a: 0,   r: 42, s: 5.5, c: ORANGE2 },
-  { a: 45,  r: 42, s: 5.0, c: ORANGE },
-  { a: 90,  r: 42, s: 5.5, c: ORANGE2 },
-  { a: 135, r: 42, s: 5.0, c: ORANGE },
-  { a: 180, r: 42, s: 5.5, c: ORANGE2 },
-  { a: 225, r: 42, s: 5.0, c: ORANGE },
-  { a: 270, r: 42, s: 5.5, c: ORANGE2 },
-  { a: 315, r: 42, s: 5.0, c: ORANGE },
+// Exact colors from the logo
+const RED   = '#be1e2d';
+const ORNG  = '#e8651a';
+const ORNG2 = '#ea7020'; // slightly lighter orange for variation
 
-  // === RING 2 - 12 dots, mix of sizes, mostly orange ===
-  { a: 0,   r: 68, s: 8.0, c: ORANGE },
-  { a: 30,  r: 68, s: 5.5, c: ORANGE3 },
-  { a: 60,  r: 68, s: 8.0, c: ORANGE },
-  { a: 90,  r: 68, s: 5.5, c: ORANGE2 },
-  { a: 120, r: 68, s: 8.0, c: ORANGE },
-  { a: 150, r: 68, s: 5.5, c: ORANGE3 },
-  { a: 180, r: 68, s: 8.0, c: ORANGE },
-  { a: 210, r: 68, s: 5.5, c: ORANGE3 },
-  { a: 240, r: 68, s: 8.0, c: ORANGE },
-  { a: 270, r: 68, s: 5.5, c: ORANGE2 },
-  { a: 300, r: 68, s: 8.0, c: ORANGE },
-  { a: 330, r: 68, s: 5.5, c: ORANGE3 },
+// Dot definitions: angle is clockwise from 12 o'clock (top)
+// [angle_deg, ring_radius, dot_radius, color]
+//
+// Carefully mapped from the reference images:
+// - Ring 4 (outer): 12 large dots, pattern R R O O R R R R O O R R
+// - Ring 3: 16 dots alternating large/small, mostly orange
+// - Ring 2: 12 dots alternating large/small, all orange
+// - Ring 1 (inner): 8 small dots, all orange
 
-  // === RING 3 - 16 dots, mix of orange and some red-orange ===
-  { a: 0,    r: 98, s: 9.0,  c: ORANGE },
-  { a: 22.5, r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 45,   r: 98, s: 9.0,  c: ORANGE },
-  { a: 67.5, r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 90,   r: 98, s: 9.0,  c: ORANGE },
-  { a: 112.5,r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 135,  r: 98, s: 9.0,  c: ORANGE },
-  { a: 157.5,r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 180,  r: 98, s: 9.0,  c: ORANGE },
-  { a: 202.5,r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 225,  r: 98, s: 9.0,  c: ORANGE },
-  { a: 247.5,r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 270,  r: 98, s: 9.0,  c: ORANGE },
-  { a: 292.5,r: 98, s: 5.0,  c: ORANGE3 },
-  { a: 300,  r: 98, s: 9.0,  c: ORANGE },
-  { a: 337.5,r: 98, s: 5.0,  c: ORANGE3 },
+const dots = [
+  // ===== RING 1 (innermost): 8 small orange dots, 45° apart =====
+  [0,    40, 4.5, ORNG2],
+  [45,   40, 4.5, ORNG],
+  [90,   40, 4.5, ORNG2],
+  [135,  40, 4.5, ORNG],
+  [180,  40, 4.5, ORNG2],
+  [225,  40, 4.5, ORNG],
+  [270,  40, 4.5, ORNG2],
+  [315,  40, 4.5, ORNG],
 
-  // === RING 4 (outermost) - 12 large dots, alternating red and orange ===
-  { a: 0,   r: 135, s: 13.0, c: ORANGE },   // 3 o'clock - orange
-  { a: 30,  r: 135, s: 13.0, c: RED },       // red
-  { a: 60,  r: 135, s: 13.0, c: RED },       // red
-  { a: 90,  r: 135, s: 13.0, c: RED },       // 12 o'clock - red
-  { a: 120, r: 135, s: 13.0, c: RED },       // red
-  { a: 150, r: 135, s: 13.0, c: RED },       // red
-  { a: 180, r: 135, s: 13.0, c: ORANGE },    // 9 o'clock - orange
-  { a: 210, r: 135, s: 13.0, c: RED },       // red
-  { a: 240, r: 135, s: 13.0, c: ORANGE },    // orange
-  { a: 270, r: 135, s: 13.0, c: RED },       // 6 o'clock - red
-  { a: 300, r: 135, s: 13.0, c: ORANGE },    // orange
-  { a: 330, r: 135, s: 13.0, c: RED },       // red
+  // ===== RING 2: 12 dots, 30° apart, alternating large(8)/small(5) =====
+  [0,    66, 8,   ORNG],
+  [30,   66, 5,   ORNG2],
+  [60,   66, 8,   ORNG],
+  [90,   66, 5,   ORNG2],
+  [120,  66, 8,   ORNG],
+  [150,  66, 5,   ORNG2],
+  [180,  66, 8,   ORNG],
+  [210,  66, 5,   ORNG2],
+  [240,  66, 8,   ORNG],
+  [270,  66, 5,   ORNG2],
+  [300,  66, 8,   ORNG],
+  [330,  66, 5,   ORNG2],
+
+  // ===== RING 3: 16 dots, 22.5° apart, alternating large(9)/small(5) =====
+  [0,     96, 9,   ORNG],
+  [22.5,  96, 5,   ORNG2],
+  [45,    96, 9,   ORNG],
+  [67.5,  96, 5,   ORNG2],
+  [90,    96, 9,   ORNG],
+  [112.5, 96, 5,   ORNG2],
+  [135,   96, 9,   ORNG],
+  [157.5, 96, 5,   ORNG2],
+  [180,   96, 9,   ORNG],
+  [202.5, 96, 5,   ORNG2],
+  [225,   96, 9,   ORNG],
+  [247.5, 96, 5,   ORNG2],
+  [270,   96, 9,   ORNG],
+  [292.5, 96, 5,   ORNG2],
+  [315,   96, 9,   ORNG],
+  [337.5, 96, 5,   ORNG2],
+
+  // ===== RING 4 (outermost): 12 large dots, 30° apart =====
+  // Pattern clockwise from top: R R O O R R R R O O R R
+  [0,    132, 13, RED],
+  [30,   132, 13, RED],
+  [60,   132, 13, ORNG],
+  [90,   132, 13, ORNG],
+  [120,  132, 13, RED],
+  [150,  132, 13, RED],
+  [180,  132, 13, RED],
+  [210,  132, 13, RED],
+  [240,  132, 13, ORNG],
+  [270,  132, 13, ORNG],
+  [300,  132, 13, RED],
+  [330,  132, 13, RED],
 ];
 
-// Precompute dot positions with animation data
-const allDots = dotDefs.map((d, i) => {
-  const angleRad = (d.a - 90) * DEG; // -90 so 0° = top
-  const ringIndex = d.r < 50 ? 0 : d.r < 80 ? 1 : d.r < 110 ? 2 : 3;
-  const spokeIndex = Math.round(d.a / 30);
-  const delay = ringIndex * 350 + spokeIndex * 40;
-  return {
-    angle: angleRad,
-    ringRadius: d.r,
-    dotRadius: d.s,
-    color: d.c,
-    ringIndex,
-    delay,
-  };
+// Build dot objects
+const allDots = dots.map(([aDeg, rr, dr, color]) => {
+  const angle = (aDeg - 90) * DEG; // convert: 0°=top → standard math angle
+  const ringIdx = rr < 50 ? 0 : rr < 80 ? 1 : rr < 110 ? 2 : 3;
+  const spokeIdx = Math.round(aDeg / 22.5);
+  const delay = ringIdx * 300 + spokeIdx * 35;
+  return { angle, ringRadius: rr, dotRadius: dr, color, ringIdx, delay };
 });
 
-// Animation timing
-const DOT_APPEAR_DURATION = 500;
-const POWER_ICON_DELAY = 1800;
-const POWER_ICON_DURATION = 700;
-const TEXT_DELAY = 2600;
-const PULSE_SPEED = 2500;
-const ROTATION_SPEED = 80000; // very slow rotation
+// Animation config
+const DOT_APPEAR = 450;
+const POWER_DELAY = 1600;
+const POWER_DURATION = 600;
+const TEXT_DELAY = 2200;
+const PULSE_SPEED = 2800;
+const ROT_SPEED = 90000;
 
-let animStartTime = null;
+let t0 = null;
 
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - Math.min(t, 1), 3);
-}
-
+function easeOut(t) { t = Math.min(t, 1); return 1 - (1 - t) * (1 - t) * (1 - t); }
 function easeOutBack(t) {
   t = Math.min(t, 1);
-  const c1 = 1.4;
-  return 1 + (c1 + 1) * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  const c = 1.3;
+  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
 }
 
-// Draw the brushstroke-style power icon
-function drawPowerIcon(alpha, glowIntensity) {
+function hexRgb(hex) {
+  return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+}
+
+function drawPowerIcon(alpha, glow) {
   ctx.save();
   ctx.globalAlpha = alpha;
 
-  const iconR = 22; // radius of the power circle
-  const strokeW = 5;
+  const r = 20;
+  const lw = 4.5;
+  const gap = 0.65; // gap at top in radians
 
-  // Subtle glow
+  // Glow
   ctx.shadowColor = '#e8b820';
-  ctx.shadowBlur = 6 + glowIntensity * 8;
+  ctx.shadowBlur = 4 + glow * 6;
 
-  // Draw the circle arc with a gradient for the brushstroke feel
-  // The circle has a gap at the top and the stroke varies in width
-  // We'll draw it as multiple small segments with varying width
+  // Circle arc
+  const startA = -Math.PI / 2 + gap / 2;
+  const endA = -Math.PI / 2 + Math.PI * 2 - gap / 2;
 
-  const segments = 40;
-  const gapAngle = 0.7; // radians gap at top
-  const startA = -Math.PI / 2 + gapAngle / 2;
-  const endA = -Math.PI / 2 + Math.PI * 2 - gapAngle / 2;
-  const totalArc = endA - startA;
+  // Draw with gradient along the arc for the golden look
+  // Main arc stroke
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startA, endA);
+  ctx.strokeStyle = '#d4a020';
+  ctx.lineWidth = lw;
+  ctx.lineCap = 'round';
+  ctx.stroke();
 
-  for (let i = 0; i < segments; i++) {
-    const t1 = i / segments;
-    const t2 = (i + 1) / segments;
-    const a1 = startA + totalArc * t1;
-    const a2 = startA + totalArc * t2;
+  // Lighter highlight on top-right portion
+  ctx.globalAlpha = alpha * 0.4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startA, startA + 1.2);
+  ctx.strokeStyle = '#f0d040';
+  ctx.lineWidth = lw * 0.7;
+  ctx.lineCap = 'round';
+  ctx.stroke();
 
-    // Vary width along the stroke for brushstroke effect
-    // Thicker at bottom, thinner near the gap
-    const midT = (t1 + t2) / 2;
-    const widthVar = 0.7 + 0.5 * Math.sin(midT * Math.PI); // wider in middle
-    const w = strokeW * widthVar;
-
-    // Color gradient: lighter gold at top-right, darker at bottom-left
-    const colorT = midT;
-    const r = Math.round(212 + colorT * 20);
-    const g = Math.round(160 + (1 - colorT) * 30);
-    const b = Math.round(23 + colorT * 10);
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, iconR, a1, a2 + 0.03);
-    ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
-    ctx.lineWidth = w;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-  }
-
-  // Draw a second pass with slight offset for texture
-  ctx.globalAlpha = alpha * 0.3;
-  ctx.shadowBlur = 0;
-  for (let i = 0; i < segments; i++) {
-    const t1 = i / segments;
-    const t2 = (i + 1) / segments;
-    const a1 = startA + totalArc * t1;
-    const a2 = startA + totalArc * t2;
-    const midT = (t1 + t2) / 2;
-    const widthVar = 0.5 + 0.3 * Math.sin(midT * Math.PI + 0.5);
-    const w = strokeW * widthVar * 0.6;
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, iconR + 1, a1, a2 + 0.03);
-    ctx.strokeStyle = '#f0d040';
-    ctx.lineWidth = w;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-  }
-
-  // Vertical line (power button top stroke)
+  // Vertical line
   ctx.globalAlpha = alpha;
-  ctx.shadowColor = '#e8b820';
-  ctx.shadowBlur = 6 + glowIntensity * 8;
+  ctx.shadowBlur = 4 + glow * 6;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - r - 5);
+  ctx.lineTo(cx, cy - 3);
+  ctx.strokeStyle = '#d4a020';
+  ctx.lineWidth = lw;
+  ctx.lineCap = 'round';
+  ctx.stroke();
 
-  // Main stroke - slightly tapered
-  const lineTop = cy - iconR - 6;
-  const lineBottom = cy - 4;
-  const lineSegments = 12;
-  for (let i = 0; i < lineSegments; i++) {
-    const t1 = i / lineSegments;
-    const t2 = (i + 1) / lineSegments;
-    const y1 = lineTop + (lineBottom - lineTop) * t1;
-    const y2 = lineTop + (lineBottom - lineTop) * t2;
-    // Slightly wider in middle
-    const midT = (t1 + t2) / 2;
-    const w = strokeW * (0.75 + 0.4 * Math.sin(midT * Math.PI));
-
-    const r = Math.round(220 + midT * 15);
-    const g = Math.round(175 - midT * 20);
-    const b = Math.round(20 + midT * 10);
-
-    ctx.beginPath();
-    ctx.moveTo(cx, y1);
-    ctx.lineTo(cx, y2 + 1);
-    ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
-    ctx.lineWidth = w;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-  }
-
-  // Texture overlay on the line
-  ctx.globalAlpha = alpha * 0.25;
+  // Highlight on line
+  ctx.globalAlpha = alpha * 0.35;
   ctx.shadowBlur = 0;
   ctx.beginPath();
-  ctx.moveTo(cx + 0.8, lineTop + 2);
-  ctx.lineTo(cx + 0.8, lineBottom - 1);
+  ctx.moveTo(cx + 0.5, cy - r - 4);
+  ctx.lineTo(cx + 0.5, cy - 5);
   ctx.strokeStyle = '#f0d040';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = lw * 0.5;
   ctx.lineCap = 'round';
   ctx.stroke();
 
   ctx.restore();
 }
 
-function hexToRgb(hex) {
-  return {
-    r: parseInt(hex.slice(1, 3), 16),
-    g: parseInt(hex.slice(3, 5), 16),
-    b: parseInt(hex.slice(5, 7), 16),
-  };
-}
-
-function animate(timestamp) {
-  if (!animStartTime) animStartTime = timestamp;
-  const elapsed = timestamp - animStartTime;
-
+function frame(ts) {
+  if (!t0) t0 = ts;
+  const el = ts - t0;
   ctx.clearRect(0, 0, W, H);
 
-  // Very slow rotation
-  const rotAngle = (elapsed / ROTATION_SPEED) * 2 * Math.PI;
+  const rot = (el / ROT_SPEED) * Math.PI * 2;
 
-  // Draw all dots
-  allDots.forEach(dot => {
-    const dotElapsed = elapsed - dot.delay;
-    if (dotElapsed <= 0) return;
+  // Draw dots
+  for (const d of allDots) {
+    const de = el - d.delay;
+    if (de <= 0) continue;
 
-    // Fade + scale in
-    const fadeT = Math.min(dotElapsed / DOT_APPEAR_DURATION, 1);
-    const alpha = easeOutCubic(fadeT);
+    const fadeT = Math.min(de / DOT_APPEAR, 1);
+    const alpha = easeOut(fadeT);
     const scale = easeOutBack(fadeT);
 
-    // Breathing pulse after entrance
-    let breathScale = 1;
+    // Gentle breathing after entrance
+    let breath = 1;
     if (fadeT >= 1) {
-      const breathElapsed = elapsed - dot.delay - DOT_APPEAR_DURATION;
-      const phase = (breathElapsed + dot.ringIndex * 400) / PULSE_SPEED;
-      breathScale = 1 + 0.06 * Math.sin(phase * 2 * Math.PI);
+      const be = el - d.delay - DOT_APPEAR;
+      breath = 1 + 0.05 * Math.sin((be + d.ringIdx * 350) / PULSE_SPEED * Math.PI * 2);
     }
 
-    // Apply very slow rotation (outer rings rotate slightly faster)
-    const rotOffset = rotAngle * (0.2 + dot.ringIndex * 0.1);
-    const angle = dot.angle + rotOffset;
-    const x = cx + Math.cos(angle) * dot.ringRadius;
-    const y = cy + Math.sin(angle) * dot.ringRadius;
-    const r = dot.dotRadius * scale * breathScale;
+    // Very slow per-ring rotation
+    const a = d.angle + rot * (0.15 + d.ringIdx * 0.08);
+    const x = cx + Math.cos(a) * d.ringRadius;
+    const y = cy + Math.sin(a) * d.ringRadius;
+    const rd = d.dotRadius * scale * breath;
 
-    const { r: cr, g: cg, b: cb } = hexToRgb(dot.color);
+    const [cr, cg, cb] = hexRgb(d.color);
 
-    // Draw dot with subtle 3D shading
     ctx.save();
     ctx.globalAlpha = alpha;
 
-    // Radial gradient for depth
-    const grad = ctx.createRadialGradient(
-      x - r * 0.25, y - r * 0.25, r * 0.1,
-      x, y, r
-    );
-    grad.addColorStop(0, `rgb(${Math.min(cr + 40, 255)}, ${Math.min(cg + 30, 255)}, ${Math.min(cb + 20, 255)})`);
-    grad.addColorStop(0.6, dot.color);
-    grad.addColorStop(1, `rgb(${Math.max(cr - 25, 0)}, ${Math.max(cg - 15, 0)}, ${Math.max(cb - 10, 0)})`);
+    // 3D shaded dot
+    const g = ctx.createRadialGradient(x - rd * 0.3, y - rd * 0.3, rd * 0.05, x, y, rd);
+    g.addColorStop(0, `rgb(${Math.min(cr+50,255)},${Math.min(cg+35,255)},${Math.min(cb+25,255)})`);
+    g.addColorStop(0.55, d.color);
+    g.addColorStop(1, `rgb(${Math.max(cr-35,0)},${Math.max(cg-20,0)},${Math.max(cb-15,0)})`);
 
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
+    ctx.arc(x, y, rd, 0, Math.PI * 2);
+    ctx.fillStyle = g;
     ctx.fill();
     ctx.restore();
-  });
+  }
 
   // Power icon
-  const powerElapsed = elapsed - POWER_ICON_DELAY;
-  if (powerElapsed > 0) {
-    const powerAlpha = easeOutCubic(powerElapsed / POWER_ICON_DURATION);
-    const glowPhase = Math.max(0, (elapsed - POWER_ICON_DELAY - POWER_ICON_DURATION) / PULSE_SPEED);
-    const glowIntensity = (Math.sin(glowPhase * 2 * Math.PI) + 1) / 2;
-    drawPowerIcon(Math.min(powerAlpha, 1), glowIntensity);
+  const pe = el - POWER_DELAY;
+  if (pe > 0) {
+    const pa = Math.min(easeOut(pe / POWER_DURATION), 1);
+    const gp = Math.max(0, (el - POWER_DELAY - POWER_DURATION) / PULSE_SPEED);
+    const gi = (Math.sin(gp * Math.PI * 2) + 1) / 2;
+    drawPowerIcon(pa, gi);
   }
 
   // Text
-  if (elapsed > TEXT_DELAY) {
+  if (el > TEXT_DELAY) {
     document.getElementById('textContainer').classList.add('visible');
   }
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(frame);
 }
 
-requestAnimationFrame(animate);
+requestAnimationFrame(frame);
 </script>
 </body>
 </html>
