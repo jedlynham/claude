@@ -77,54 +77,50 @@ const DEG = Math.PI / 180;
 const RED   = '#be1e2d';
 const ORNG  = '#e8651a';
 
-// 3 rings matched exactly from reference image:
-// Ring 1 (inner):  10 small orange dots
-// Ring 2 (middle): 14 medium orange dots
-// Ring 3 (outer):  12 large dots - R,R,O,O,R,R,R,R,O,O,R,R
+// 3 rings matched from reference:
+// Ring 1 (inner):  8 small orange dots at 45° intervals
+// Ring 2 (middle): 12 medium orange dots at 30° intervals
+// Ring 3 (outer):  12 large dots at 30° - R,R,O,O,R,R,R,R,O,O,R,R
 
 const dots = [
-  // ===== RING 1 (inner): 10 small orange dots, 36° apart =====
-  [0,    48, 5.5, ORNG],
-  [36,   48, 5.5, ORNG],
-  [72,   48, 5.5, ORNG],
-  [108,  48, 5.5, ORNG],
-  [144,  48, 5.5, ORNG],
-  [180,  48, 5.5, ORNG],
-  [216,  48, 5.5, ORNG],
-  [252,  48, 5.5, ORNG],
-  [288,  48, 5.5, ORNG],
-  [324,  48, 5.5, ORNG],
+  // ===== RING 1 (inner): 8 small orange dots, 45° apart =====
+  [0,    44, 6, ORNG],
+  [45,   44, 6, ORNG],
+  [90,   44, 6, ORNG],
+  [135,  44, 6, ORNG],
+  [180,  44, 6, ORNG],
+  [225,  44, 6, ORNG],
+  [270,  44, 6, ORNG],
+  [315,  44, 6, ORNG],
 
-  // ===== RING 2 (middle): 14 medium orange dots, ~25.7° apart =====
-  [0,      85, 8, ORNG],
-  [25.7,   85, 8, ORNG],
-  [51.4,   85, 8, ORNG],
-  [77.1,   85, 8, ORNG],
-  [102.9,  85, 8, ORNG],
-  [128.6,  85, 8, ORNG],
-  [154.3,  85, 8, ORNG],
-  [180,    85, 8, ORNG],
-  [205.7,  85, 8, ORNG],
-  [231.4,  85, 8, ORNG],
-  [257.1,  85, 8, ORNG],
-  [282.9,  85, 8, ORNG],
-  [308.6,  85, 8, ORNG],
-  [334.3,  85, 8, ORNG],
+  // ===== RING 2 (middle): 12 medium orange dots, 30° apart =====
+  [0,    82, 9.5, ORNG],
+  [30,   82, 9.5, ORNG],
+  [60,   82, 9.5, ORNG],
+  [90,   82, 9.5, ORNG],
+  [120,  82, 9.5, ORNG],
+  [150,  82, 9.5, ORNG],
+  [180,  82, 9.5, ORNG],
+  [210,  82, 9.5, ORNG],
+  [240,  82, 9.5, ORNG],
+  [270,  82, 9.5, ORNG],
+  [300,  82, 9.5, ORNG],
+  [330,  82, 9.5, ORNG],
 
   // ===== RING 3 (outer): 12 large dots, 30° apart =====
   // Pattern: R R O O R R R R O O R R
-  [0,    125, 14, RED],
-  [30,   125, 14, RED],
-  [60,   125, 14, ORNG],
-  [90,   125, 14, ORNG],
-  [120,  125, 14, RED],
-  [150,  125, 14, RED],
-  [180,  125, 14, RED],
-  [210,  125, 14, RED],
-  [240,  125, 14, ORNG],
-  [270,  125, 14, ORNG],
-  [300,  125, 14, RED],
-  [330,  125, 14, RED],
+  [0,    130, 15, RED],
+  [30,   130, 15, RED],
+  [60,   130, 15, ORNG],
+  [90,   130, 15, ORNG],
+  [120,  130, 15, RED],
+  [150,  130, 15, RED],
+  [180,  130, 15, RED],
+  [210,  130, 15, RED],
+  [240,  130, 15, ORNG],
+  [270,  130, 15, ORNG],
+  [300,  130, 15, RED],
+  [330,  130, 15, RED],
 ];
 
 // Build dot objects
@@ -162,9 +158,9 @@ function drawPowerIcon(alpha, glow) {
   const lw = 4.5;
   const gap = 0.65; // gap at top in radians
 
-  // Glow
+  // Subtle glow
   ctx.shadowColor = '#e8b820';
-  ctx.shadowBlur = 4 + glow * 6;
+  ctx.shadowBlur = 2 + glow * 3;
 
   // Circle arc
   const startA = -Math.PI / 2 + gap / 2;
@@ -190,7 +186,7 @@ function drawPowerIcon(alpha, glow) {
 
   // Vertical line
   ctx.globalAlpha = alpha;
-  ctx.shadowBlur = 4 + glow * 6;
+  ctx.shadowBlur = 2 + glow * 3;
   ctx.beginPath();
   ctx.moveTo(cx, cy - r - 5);
   ctx.lineTo(cx, cy - 3);
