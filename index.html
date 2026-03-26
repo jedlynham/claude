@@ -77,77 +77,60 @@ const DEG = Math.PI / 180;
 const RED   = '#be1e2d';
 const ORNG  = '#e8651a';
 
-// Dot definitions: angle is clockwise from 12 o'clock (top)
-// [angle_deg, ring_radius, dot_radius, color]
-//
-// Carefully mapped from the reference images:
-// - Ring 4 (outer): 12 large dots, pattern R R O O R R R R O O R R
-// - Ring 3: 16 dots alternating large/small, mostly orange
-// - Ring 2: 12 dots alternating large/small, all orange
-// - Ring 1 (inner): 8 small dots, all orange
+// 3 rings matched exactly from reference image:
+// Ring 1 (inner):  10 small orange dots
+// Ring 2 (middle): 14 medium orange dots
+// Ring 3 (outer):  12 large dots - R,R,O,O,R,R,R,R,O,O,R,R
 
 const dots = [
-  // ===== RING 1 (innermost): 8 orange dots, consistent size, 45° apart =====
-  [0,    40, 5, ORNG],
-  [45,   40, 5, ORNG],
-  [90,   40, 5, ORNG],
-  [135,  40, 5, ORNG],
-  [180,  40, 5, ORNG],
-  [225,  40, 5, ORNG],
-  [270,  40, 5, ORNG],
-  [315,  40, 5, ORNG],
+  // ===== RING 1 (inner): 10 small orange dots, 36° apart =====
+  [0,    48, 5.5, ORNG],
+  [36,   48, 5.5, ORNG],
+  [72,   48, 5.5, ORNG],
+  [108,  48, 5.5, ORNG],
+  [144,  48, 5.5, ORNG],
+  [180,  48, 5.5, ORNG],
+  [216,  48, 5.5, ORNG],
+  [252,  48, 5.5, ORNG],
+  [288,  48, 5.5, ORNG],
+  [324,  48, 5.5, ORNG],
 
-  // ===== RING 2: 12 orange dots, consistent size, 30° apart =====
-  [0,    66, 7, ORNG],
-  [30,   66, 7, ORNG],
-  [60,   66, 7, ORNG],
-  [90,   66, 7, ORNG],
-  [120,  66, 7, ORNG],
-  [150,  66, 7, ORNG],
-  [180,  66, 7, ORNG],
-  [210,  66, 7, ORNG],
-  [240,  66, 7, ORNG],
-  [270,  66, 7, ORNG],
-  [300,  66, 7, ORNG],
-  [330,  66, 7, ORNG],
+  // ===== RING 2 (middle): 14 medium orange dots, ~25.7° apart =====
+  [0,      85, 8, ORNG],
+  [25.7,   85, 8, ORNG],
+  [51.4,   85, 8, ORNG],
+  [77.1,   85, 8, ORNG],
+  [102.9,  85, 8, ORNG],
+  [128.6,  85, 8, ORNG],
+  [154.3,  85, 8, ORNG],
+  [180,    85, 8, ORNG],
+  [205.7,  85, 8, ORNG],
+  [231.4,  85, 8, ORNG],
+  [257.1,  85, 8, ORNG],
+  [282.9,  85, 8, ORNG],
+  [308.6,  85, 8, ORNG],
+  [334.3,  85, 8, ORNG],
 
-  // ===== RING 3: 16 orange dots, consistent size, 22.5° apart =====
-  [0,     96, 9, ORNG],
-  [22.5,  96, 9, ORNG],
-  [45,    96, 9, ORNG],
-  [67.5,  96, 9, ORNG],
-  [90,    96, 9, ORNG],
-  [112.5, 96, 9, ORNG],
-  [135,   96, 9, ORNG],
-  [157.5, 96, 9, ORNG],
-  [180,   96, 9, ORNG],
-  [202.5, 96, 9, ORNG],
-  [225,   96, 9, ORNG],
-  [247.5, 96, 9, ORNG],
-  [270,   96, 9, ORNG],
-  [292.5, 96, 9, ORNG],
-  [315,   96, 9, ORNG],
-  [337.5, 96, 9, ORNG],
-
-  // ===== RING 4 (outermost): 12 large dots, 30° apart, ALL RED =====
-  [0,    132, 13, RED],
-  [30,   132, 13, RED],
-  [60,   132, 13, RED],
-  [90,   132, 13, RED],
-  [120,  132, 13, RED],
-  [150,  132, 13, RED],
-  [180,  132, 13, RED],
-  [210,  132, 13, RED],
-  [240,  132, 13, RED],
-  [270,  132, 13, RED],
-  [300,  132, 13, RED],
-  [330,  132, 13, RED],
+  // ===== RING 3 (outer): 12 large dots, 30° apart =====
+  // Pattern: R R O O R R R R O O R R
+  [0,    125, 14, RED],
+  [30,   125, 14, RED],
+  [60,   125, 14, ORNG],
+  [90,   125, 14, ORNG],
+  [120,  125, 14, RED],
+  [150,  125, 14, RED],
+  [180,  125, 14, RED],
+  [210,  125, 14, RED],
+  [240,  125, 14, ORNG],
+  [270,  125, 14, ORNG],
+  [300,  125, 14, RED],
+  [330,  125, 14, RED],
 ];
 
 // Build dot objects
 const allDots = dots.map(([aDeg, rr, dr, color]) => {
   const angle = (aDeg - 90) * DEG; // convert: 0°=top → standard math angle
-  const ringIdx = rr < 50 ? 0 : rr < 80 ? 1 : rr < 110 ? 2 : 3;
+  const ringIdx = rr < 60 ? 0 : rr < 110 ? 1 : 2;
   const spokeIdx = Math.round(aDeg / 22.5);
   const delay = ringIdx * 300 + spokeIdx * 35;
   return { angle, ringRadius: rr, dotRadius: dr, color, ringIdx, delay };
