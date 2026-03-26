@@ -18,7 +18,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 36px;
+    gap: 10px;
   }
   canvas { display: block; }
   .text-container {
@@ -84,43 +84,42 @@ const ORNG  = '#e8651a';
 
 const dots = [
   // ===== RING 1 (inner): 8 small orange dots, 45° apart =====
-  [0,    44, 6, ORNG],
-  [45,   44, 6, ORNG],
-  [90,   44, 6, ORNG],
-  [135,  44, 6, ORNG],
-  [180,  44, 6, ORNG],
-  [225,  44, 6, ORNG],
-  [270,  44, 6, ORNG],
-  [315,  44, 6, ORNG],
+  [0,    38, 5.5, ORNG],
+  [45,   38, 5.5, ORNG],
+  [90,   38, 5.5, ORNG],
+  [135,  38, 5.5, ORNG],
+  [180,  38, 5.5, ORNG],
+  [225,  38, 5.5, ORNG],
+  [270,  38, 5.5, ORNG],
+  [315,  38, 5.5, ORNG],
 
   // ===== RING 2 (middle): 12 medium orange dots, 30° apart =====
-  [0,    82, 9.5, ORNG],
-  [30,   82, 9.5, ORNG],
-  [60,   82, 9.5, ORNG],
-  [90,   82, 9.5, ORNG],
-  [120,  82, 9.5, ORNG],
-  [150,  82, 9.5, ORNG],
-  [180,  82, 9.5, ORNG],
-  [210,  82, 9.5, ORNG],
-  [240,  82, 9.5, ORNG],
-  [270,  82, 9.5, ORNG],
-  [300,  82, 9.5, ORNG],
-  [330,  82, 9.5, ORNG],
+  [0,    68, 9, ORNG],
+  [30,   68, 9, ORNG],
+  [60,   68, 9, ORNG],
+  [90,   68, 9, ORNG],
+  [120,  68, 9, ORNG],
+  [150,  68, 9, ORNG],
+  [180,  68, 9, ORNG],
+  [210,  68, 9, ORNG],
+  [240,  68, 9, ORNG],
+  [270,  68, 9, ORNG],
+  [300,  68, 9, ORNG],
+  [330,  68, 9, ORNG],
 
-  // ===== RING 3 (outer): 12 large dots, 30° apart =====
-  // Pattern: R R O O R R R R O O R R
-  [0,    130, 15, RED],
-  [30,   130, 15, RED],
-  [60,   130, 15, ORNG],
-  [90,   130, 15, ORNG],
-  [120,  130, 15, RED],
-  [150,  130, 15, RED],
-  [180,  130, 15, RED],
-  [210,  130, 15, RED],
-  [240,  130, 15, ORNG],
-  [270,  130, 15, ORNG],
-  [300,  130, 15, RED],
-  [330,  130, 15, RED],
+  // ===== RING 3 (outer): 12 large dots, 30° apart, ALL RED =====
+  [0,    105, 14, RED],
+  [30,   105, 14, RED],
+  [60,   105, 14, RED],
+  [90,   105, 14, RED],
+  [120,  105, 14, RED],
+  [150,  105, 14, RED],
+  [180,  105, 14, RED],
+  [210,  105, 14, RED],
+  [240,  105, 14, RED],
+  [270,  105, 14, RED],
+  [300,  105, 14, RED],
+  [330,  105, 14, RED],
 ];
 
 // Build dot objects
